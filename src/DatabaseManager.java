@@ -6,15 +6,16 @@ public class DatabaseManager {
     private static Connection conn;
 
     public static Connection getConnection() throws SQLException {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");  // load driver
-            if (conn == null || conn.isClosed()) {
-                conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/SecurityModuleDB", "root", "Jsa45582007@@"
-                );
+        if (conn == null || conn.isClosed()) {
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+            } catch (ClassNotFoundException e) {
+                throw new SQLException("MySQL JDBC driver not found.", e);
             }
-        } catch (ClassNotFoundException e) {
-            throw new SQLException("MySQL JDBC driver not found.", e);
+            conn = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/PayrollDB?useSSL=false&serverTimezone=UTC",
+                "root", "Jsa45582007@@"
+            );
         }
         return conn;
     }

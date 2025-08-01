@@ -1,36 +1,37 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Scanner;
 
 public class SecurityModule {
-    private final HasherStrategy hasher;
+    private HasherStrategy hasher;
 
     public SecurityModule(HasherStrategy hasher) {
         this.hasher = hasher;
     }
 
-    public boolean registerUser() {
-        Scanner scanner = new Scanner(System.in);
-        try {
-            System.out.print("Enter username: ");
-            String username = scanner.nextLine();
-            System.out.print("Enter password: ");
-            String password = scanner.nextLine();
+    public boolean login(String username, String password) {
+    try {
+        String hashedPassword = hasher.hash(password);
 
-            String hashedPassword = this.hasher.hash(password);
-
-            Connection conn = DatabaseManager.getConnection();
-            String sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseManager.getConnection()) {
+            String query = "SELECT * FROM users WHERE username = ? AND password_hash = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, username);
             stmt.setString(2, hashedPassword);
-            stmt.executeUpdate();
-
-            System.out.println("✅ User registered with hash: " + hashedPassword);
-            return true;
-        } catch (Exception e) {
-            System.err.println("❌ Registration failed: " + e.getMessage());
-            return false;
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                System.out.println("✅ Login successful!");
+                return true;
+            } else {
+                System.out.println("❌ Invalid username or password.");
+                return false;
+            }
         }
+    } catch (Exception e) {
+        System.err.println("Error during login: " + e.getMessage());
+        return false;
     }
+}
+
 }
