@@ -7,16 +7,15 @@ public class DatabaseManager {
 
     public static Connection getConnection() throws SQLException {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");  // load driver
             if (conn == null || conn.isClosed()) {
                 conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/SecurityModuleDB",
-                    "root", "Jsa45582007@@"
+                    "jdbc:mysql://localhost:3306/SecurityModuleDB", "root", "Jsa45582007@@"
                 );
             }
-            return conn;
         } catch (ClassNotFoundException e) {
             throw new SQLException("MySQL JDBC driver not found.", e);
         }
+        return conn;
     }
 }
