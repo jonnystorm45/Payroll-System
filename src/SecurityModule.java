@@ -10,12 +10,17 @@ public class SecurityModule {
         this.hasher = hasher;
     }
 
-    public boolean login(String username, String password) {
+   public boolean login(String username, String password) {
     try {
+        System.out.println("DEBUG: Username entered: " + username);
+        System.out.println("DEBUG: Password entered (raw): " + password);
+
         String hashedPassword = hasher.hash(password);
+        System.out.println("DEBUG: Password hashed: " + hashedPassword);
 
         try (Connection conn = DatabaseManager.getConnection()) {
             String query = "SELECT * FROM users WHERE username = ? AND password_hash = ?";
+            System.out.println("DEBUG: Executing query...");
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, username);
             stmt.setString(2, hashedPassword);
@@ -24,7 +29,7 @@ public class SecurityModule {
                 System.out.println("✅ Login successful!");
                 return true;
             } else {
-                System.out.println("❌ Invalid username or password.");
+                System.out.println("DEBUG: No rows matched the query.");
                 return false;
             }
         }
@@ -33,5 +38,7 @@ public class SecurityModule {
         return false;
     }
 }
+
+
 
 }

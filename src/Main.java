@@ -14,12 +14,12 @@ public class Main extends JFrame {
     private DefaultListModel<String> employeeListModel;
 
     public Main() {
-        super("Payroll System");
-        setSize(500, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setupLogin();
-    }
+    super("Payroll System");
+    setSize(500, 400);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setLocationRelativeTo(null);
+    setupLogin();
+}
 
     private void setupLogin() {
     loginPanel = new JPanel();
